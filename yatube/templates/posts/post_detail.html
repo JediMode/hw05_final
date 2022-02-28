@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load thumbnail %}
+{% block title %}
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" 
+    rel="stylesheet"
+    integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" 
+    crossorigin="anonymous">
+  <title>{{ title }}</title>
+{% endblock %}
+{% block content %}    
+  <div class="row">
+    <aside class="col-12 col-md-3">
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+          Дата публикации: {{ post_detail.pub_date|date:"d E Y" }}
+        </li>  
+        <li class="list-group-item">
+          Группа: {{ post_detail.group.title }}
+          {% if post_detail.group %}
+            <a href={% url 'posts:group_posts' slug=post_detail.group.slug %}>все записи группы</a>
+          {% endif %}
+        {% if not forloop.last %} <hr> {% endif %}
+        </li>
+        <li class="list-group-item">
+          Автор: {{ author.get_full_name }}
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          Всего постов автора: {{ author.posts.count }}
+        </li>
+        <li class="list-group-item">
+          <a href="{% url 'posts:profile' post_detail.author.username %}">
+            все посты пользователя
+          </a>
+        </li>
+      </ul>
+    </aside>
+    <article class="col-12 col-md-9">
+      {% thumbnail post_detail.image "1000x460" crop="center" upscale=True as im %}
+        <img class="card-img my-2" src="{{ im.url }}">
+      {% endthumbnail %}
+      <p class="test">
+        {{ post_detail.text|linebreaksbr }}
+      </p>
+      {% if user == post.author %}
+        <a class="btn btn-primary" href="{% url 'posts:post_edit' post_detail.pk %}">
+          редактировать запись
+        </a>
+      {% endif %}
+    {% include 'posts/add_comment.html' %}
+    </article>
+  </div> 
+{% endblock %} 

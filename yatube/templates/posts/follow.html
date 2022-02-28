@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}   
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" 
+    rel="stylesheet"
+    integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" 
+    crossorigin="anonymous">
+  <title>Подписки</title>
+{% endblock %}
+{% load thumbnail %}
+{% block content %} 
+{% include 'posts/includes/switcher.html' %}
+  <h1>Подписки</h1>
+  <p>
+    {{ group.description|truncatechars:30 }}
+  </p>
+      {% for post in page_obj %}
+        <ul>
+          <li>
+            Автор:
+              {% if post.author.get_full_name %}
+                {{ post.author.get_full_name }}
+              {% else %}
+                {{ post.author }}
+              {% endif %}
+              <a href="{% url 'posts:profile' post.author.username %}">все посты пользователя</a>
+          </li>
+          <li>
+            Дата публикации: {{ post.pub_date|date:"d E Y" }}
+          </li>
+        </ul>
+        {% thumbnail post.image "1000x460" crop="center" upscale=True as im %}
+          <img class="card-img my-2" src="{{ im.url }}">
+        {% endthumbnail %}      
+        <p>
+          {{ post.text|linebreaksbr }}
+        </p>
+        <a href="{% url 'posts:post_detail' post.pk %}">подробная информация</a>
+        {% if post.group is not NULL %}
+          <a href={% url 'posts:group_posts' slug=post.group.slug %}>все записи группы</a>
+        {% endif %}
+        {% if not forloop.last %} <hr> {% endif %}
+      {% endfor %}
+    {% include 'posts/includes/paginator.html' %}
+{% endblock %}
