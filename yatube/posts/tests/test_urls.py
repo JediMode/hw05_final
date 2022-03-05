@@ -38,11 +38,11 @@ class PostURLTests(TestCase):
         cache.clear()
         self.guest_client = Client()
 
-    def test_not_found_url(self):
+    def test_post_not_found_url(self):
         response = self.guest_client.get(URL_UNEXISTING)
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND.value)
 
-    def test_guest_client_url_work(self):
+    def test_post_guest_client_url_work(self):
         status_code = HTTPStatus.OK.value
         urls_dict = {
             URL_INDEX: status_code,
@@ -55,7 +55,7 @@ class PostURLTests(TestCase):
                 response = self.guest_client.get(address)
                 self.assertEqual(response.status_code, status)
 
-    def test_authorised_client_url_work(self):
+    def test_post_authorised_client_url_work(self):
         status_code = HTTPStatus.OK.value
         urls_dict = {
             URL_POST_CREATE: status_code,
@@ -66,7 +66,7 @@ class PostURLTests(TestCase):
                 response = self.authorized_client.get(address)
                 self.assertEqual(response.status_code, status)
 
-    def test_urls_redirects_anonymous(self):
+    def test_post_urls_redirects_anonymous(self):
         response_value = self.guest_client
         dict_redirect = {
             response_value.get(
@@ -76,12 +76,12 @@ class PostURLTests(TestCase):
                 PostURLTests.URL_POST_EDIT, follow=True
             ): PostURLTests.URL_ANON_EDIT_REDIRECT,
         }
-        for old_url, new_url in dict_redirect.items():
-            with self.subTest(old_url=old_url):
-                response = old_url
-                self.assertRedirects(response, new_url)
+        for request, reply in dict_redirect.items():
+            with self.subTest(request=request):
+                response = request
+                self.assertRedirects(response, reply)
 
-    def test_urls_uses_correct_template(self):
+    def test_post_urls_uses_correct_template(self):
         template_url_names = {
             URL_INDEX: 'posts/index.html',
             URL_GROUP_LIST: 'posts/group_list.html',

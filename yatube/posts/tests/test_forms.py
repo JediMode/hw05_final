@@ -51,16 +51,9 @@ class PostFormTest(TestCase):
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
 
-    def test_form_post_create(self):
+    def test_post_form_post_create(self):
         post_count = Post.objects.count()
-        small_img = (
-            b'\x47\x49\x46\x38\x39\x61\x02\x00'
-            b'\x01\x00\x80\x00\x00\x00\x00\x00'
-            b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
-            b'\x00\x00\x00\x2C\x00\x00\x00\x00'
-            b'\x02\x00\x01\x00\x00\x02\x02\x0C'
-            b'\x0A\x00\x3B'
-        )
+        small_img = settings.TEST_IMAGE
         uploaded = SimpleUploadedFile(
             name='small.gif',
             content=small_img,
@@ -91,7 +84,7 @@ class PostFormTest(TestCase):
             ).exists()
         )
 
-    def test_form_post_edit(self):
+    def test_post_form_post_edit(self):
         orig_post = self.post.text
         form_data = {
             'text': 'Отредактированный текст',
@@ -115,7 +108,7 @@ class PostFormTest(TestCase):
         )
         self.assertNotEqual(orig_post, edited_post)
 
-    def test_auth_client_can_leave_comment(self):
+    def test_post_auth_client_can_leave_comment(self):
         comments_count = Comment.objects.count()
         form_data = {
             'text': 'text-comment',
@@ -139,7 +132,7 @@ class PostFormTest(TestCase):
         self.assertEqual(last_comment.text, form_data['text'])
         self.assertEqual(last_comment.author, self.user)
 
-    def test_comments_exists_on_post_detail_page(self):
+    def test_post_comments_exists_on_post_detail_page(self):
         response = self.guest_client.get(
             reverse(
                 PostFormTest.ADD_POST_DETAIL,
