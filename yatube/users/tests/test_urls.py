@@ -1,7 +1,8 @@
 from http import HTTPStatus
-from django.test import Client, TestCase
-from django.core.cache import cache
+
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
+from django.test import Client, TestCase
 
 User = get_user_model()
 
@@ -24,7 +25,7 @@ class UsersURLTests(TestCase):
         cls.user = User.objects.create_user(username='Nik')
         cls.authorized_client = Client()
         cls.authorized_client.force_login(cls.user)
-    
+
     def setUp(self):
         cache.clear()
         self.guest_client = Client()
@@ -52,14 +53,12 @@ class UsersURLTests(TestCase):
             with self.subTest(url=url):
                 response = self.authorized_client.get(url)
                 self.assertEqual(response.status_code, status)
-    
+
     def test_users_urls_uses_correct_templates(self):
         template_urls_names = {
             URL_SIGNUP: 'users/signup.html',
             URL_LOGIN: 'users/login.html',
             URL_PASS_RESET: 'users/login.html',
-            URL_PASS_CHANGE: 'users/password_change_form.html',
-            URL_CHANGE_DONE: 'users/password_change_done.html',
             URL_LOGOUT: 'users/logged_out.html',
         }
         for url, template in template_urls_names.items():

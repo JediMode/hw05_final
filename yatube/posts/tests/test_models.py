@@ -1,6 +1,5 @@
 from django.test import TestCase
-
-from posts.models import Comment, Follow, Group, Post, User
+from posts.models import Follow, Group, Post, User
 
 
 class PostModelTest(TestCase):
@@ -59,8 +58,8 @@ class CommentModelTest(TestCase):
         cls.comment = Post.objects.create(
             author=cls.user,
             text='test-comment',
-            )
-        
+        )
+
     def test_post_comment_has_correct_object_names(self):
         comment = CommentModelTest.comment
         expected_field = comment.text
